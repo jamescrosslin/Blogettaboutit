@@ -60,8 +60,9 @@ router.get(
 router.post(
   "/:id/edit",
   asyncHandler(async (req, res) => {
-    const article = await Article.update(req.body, { where: { id: req.params.id } });
-    res.redirect("/articles/");
+    const { id } = req.params;
+    const article = await Article.update(req.body, { where: { id } });
+    res.redirect("/articles/" + id);
   })
 );
 
