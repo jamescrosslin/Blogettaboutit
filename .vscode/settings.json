@@ -1,2 +1,5 @@
 {
+  "editor.wordWrapColumn": 120,
+  "editor.formatOnSave": true,
+  "prettier.printWidth": 120
 }
