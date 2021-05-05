@@ -32,9 +32,18 @@ router.get("/new", (req, res) => {
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    const newRow = await Article.create(req.body);
-    console.log(newRow.toJSON());
-    res.redirect("/articles/");
+    let article;
+    try {
+      article = await Article.create(req.body);
+      res.redirect("/articles/" + article.id);
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
+        article = await Article.build(req.body);
+        res.render("articles/new", { article, errors: error.errors, title: "New Article" });
+      } else {
+        throw error;
+      }
+    }
   })
 );
 
@@ -71,7 +80,7 @@ router.get(
   "/:id/delete",
   asyncHandler(async (req, res) => {
     const article = await Article.findByPk(req.params.id);
-    res.render("articles/delete", { article, title: "Delete Article" });
+    article ? res.render("articles/delete", { article, title: "Delete Article" }) : res.sendStatus(404);
   })
 );
 
@@ -79,8 +88,8 @@ router.get(
 router.post(
   "/:id/delete",
   asyncHandler(async (req, res) => {
-    await Article.destroy({ where: { id: req.params.id } });
-    res.redirect("/articles");
+    const article = await Article.destroy({ where: { id: req.params.id } });
+    article ? res.redirect("/articles") : res.sendStatus(404);
   })
 );
 
