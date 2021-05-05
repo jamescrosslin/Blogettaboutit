@@ -42,7 +42,8 @@ router.post(
 router.get(
   "/:id/edit",
   asyncHandler(async (req, res) => {
-    res.render("articles/edit", { article: {}, title: "Edit Article" });
+    const article = await Article.findByPk(req.params.id);
+    res.render("articles/edit", { article, title: "Edit Article" });
   })
 );
 
@@ -50,7 +51,8 @@ router.get(
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
-    res.render("articles/show", { article: {}, title: "Article Title" });
+    const article = await Article.findByPk(req.params.id);
+    res.render("articles/show", { article, title: "Article Title" });
   })
 );
 
@@ -58,6 +60,7 @@ router.get(
 router.post(
   "/:id/edit",
   asyncHandler(async (req, res) => {
+    const article = await Article.update(req.body, { where: { id: req.params.id } });
     res.redirect("/articles/");
   })
 );
