@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Article, sequelize } = require("../models");
+const { Article } = require("../models");
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
@@ -43,7 +43,7 @@ router.get(
   "/:id/edit",
   asyncHandler(async (req, res) => {
     const article = await Article.findByPk(req.params.id);
-    res.render("articles/edit", { article, title: "Edit Article" });
+    article ? res.render("articles/edit", { article, title: "Edit Article" }) : res.sendStatus(404);
   })
 );
 
@@ -52,7 +52,7 @@ router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const article = await Article.findByPk(req.params.id);
-    res.render("articles/show", { article, title: article.title });
+    article ? res.render("articles/show", { article, title: article.title }) : res.sendStatus(404);
   })
 );
 
@@ -61,8 +61,8 @@ router.post(
   "/:id/edit",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const article = await Article.update(req.body, { where: { id } });
-    res.redirect("/articles/" + id);
+    const article = await Article.update(req.body, { where: { id: 0 } });
+    article[0] ? res.redirect("/articles/" + id) : res.sendStatus(404);
   })
 );
 
