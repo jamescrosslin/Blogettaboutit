@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Article = require("../models/article.js");
+const { Article, sequelize } = require("../models");
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
@@ -18,7 +18,8 @@ function asyncHandler(cb) {
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const articles = await res.render("articles/index", { articles: {}, title: "Sequelize-It!" });
+    const articles = await Article.findAll().map((article) => article.toJSON());
+    res.render("articles/index", { articles, title: "Sequelize-It!" });
   })
 );
 
@@ -31,6 +32,8 @@ router.get("/new", (req, res) => {
 router.post(
   "/",
   asyncHandler(async (req, res) => {
+    const newRow = await Article.create(req.body);
+    console.log(newRow.toJSON());
     res.redirect("/articles/");
   })
 );
