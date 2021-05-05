@@ -18,7 +18,7 @@ function asyncHandler(cb) {
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const articles = await Article.findAll().map((article) => article.toJSON());
+    const articles = await Article.findAll({ order: [["createdAt", "DESC"]] });
     res.render("articles/index", { articles, title: "Blogettaboutit!" });
   })
 );
@@ -52,7 +52,7 @@ router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const article = await Article.findByPk(req.params.id);
-    res.render("articles/show", { article, title: "Article Title" });
+    res.render("articles/show", { article, title: article.title });
   })
 );
 
