@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
       author: Sequelize.STRING,
       body: Sequelize.TEXT,
     },
-    { sequelize, "paranoid": true }
+    { sequelize }
   );
   return Article;
 };
