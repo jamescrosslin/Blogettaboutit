@@ -19,7 +19,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const articles = await Article.findAll().map((article) => article.toJSON());
-    res.render("articles/index", { articles, title: "Sequelize-It!" });
+    res.render("articles/index", { articles, title: "Blogettaboutit!" });
   })
 );
 
