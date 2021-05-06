@@ -69,9 +69,20 @@ router.get(
 router.post(
   "/:id/edit",
   asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const article = await Article.update(req.body, { where: { id: 0 } });
-    article[0] ? res.redirect("/articles/" + id) : res.sendStatus(404);
+    let article;
+    try {
+      const { id } = req.params;
+      article = await Article.update(req.body, { where: { id: 0 } });
+      article[0] ? res.redirect("/articles/" + id) : res.sendStatus(404);
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
+        article = await Article.build(req.body);
+        article.id = req.params.id; // make sure correct article gets updated
+        res.render("articles/edit", { article, errors: error.errors, title: "Edit Article" });
+      } else {
+        throw error;
+      }
+    }
   })
 );
 
