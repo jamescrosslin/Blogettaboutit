@@ -72,7 +72,7 @@ router.post(
     let article;
     try {
       const { id } = req.params;
-      article = await Article.update(req.body, { where: { id: 0 } });
+      article = await Article.update(req.body, { where: { id } });
       article[0] ? res.redirect("/articles/" + id) : res.sendStatus(404);
     } catch (error) {
       if (error.name === "SequelizeValidationError") {
